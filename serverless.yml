@@ -1,0 +1,35 @@
+service: www-backend
+
+provider:
+  name: aws
+  runtime: python3.7
+  stage: dev
+  profile: default
+
+package:
+  exclude:
+    - venv/**
+
+functions:
+  fetch-currently-reading:
+    handler: functions.fetch_url
+    environment:
+      URL: https://www.goodreads.com/review/list_rss/12882530?shelf=currently-reading
+    events:
+      - http:
+          path: feeds/currently-reading
+          method: get
+          cors: true
+
+  fetch-latest-bookmarks:
+    handler: functions.fetch_url
+    environment:
+      URL: https://feeds.pinboard.in/json/u:egrajeda/
+    events:
+      - http:
+          path: feeds/latest-bookmarks
+          method: get
+          cors: true
+
+plugins:
+  - serverless-python-requirements
